@@ -1,0 +1,52 @@
+# ディレクトリ内のファイルを全て行に変換する
+
+import sys
+import nltk      # NLTK module
+import shelve    # Shelve module
+import os        # OS module
+
+if __name__=="__main__":
+
+    # get directry name
+    fs = os.listdir (sys.argv[1])
+    
+    # make output file
+    g = open ("dir_to_fv.txt", "w")
+    
+    # read each files
+    for fn in fs:
+        f = open (sys.argv[1] + "/" + fn, "r", encoding="utf-8")
+        txt = f.read()
+        f.close()
+
+        # NLTK word segmentation with counting
+        wordcount = {}
+        # shelve
+        sh = shelve.open("index.shelve")
+
+        # Processing
+        for line in nltk.tokenize.sent_tokenize(txt.strip()):
+            line = nltk.tokenize.word_tokenize( line )
+            for word in line:
+                indexcount = 0    # index count : インデックスの頻度
+                # indexcounter
+                if word not in sh:
+                    indexcount = len(sh) + 1     # increment index
+                    sh[word] = indexcount
+                else:
+                    indexcount= sh[word]         # put on shelve
+                # wordcounter
+                if indexcount in wordcount:
+                    wordcount[indexcount] += 1   # increment count
+                else:
+                    wordcount[indexcount] = 1    # count initialize
+
+        sh.close()    # Close Shelve
+            
+        # sort by count
+        for k,v in sorted(wordcount.items(), key = lambda x:int(x[0])):            
+            k = str(k)    # インデックスの頻度を文字列に変換
+            v = str(v)    # インデックス順を文字列に変換
+            # g.write ( k + ":" + v + "\t" )    # カウント数を記入
+        g.write( txt )
+    g.close()    # ファイルを閉じる
