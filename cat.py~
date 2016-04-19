@@ -1,9 +1,0 @@
-import sys    # 標準ライブラリをインポート
-
-if __name__ == "__main__":    # if文のブロック(スクリプトファイルとして実行された場合)
-
-    f = sys.argv
-
-    f = open ("cv000_29590.txt", "r", encoding="utf-8")
-    for line in f:
-        print(line, end=" ")
