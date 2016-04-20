@@ -50,7 +50,7 @@ if __name__=="__main__":
         for k,v in sorted(wordcount.items(), key = lambda x:int(x[0])):            
             k = str(k)    # インデックスの頻度を文字列に変換
             v = str(v)    # インデックス順を文字列に変換
-            label.append ( k + ":" + v + "\t" )    # カウント数を記入
+            label.append ( k + ":" + v + " " )    # カウント数を記入
         g.write ( " ".join(label) + "\n" )
         # g.write( txt )
     g.close()    # ファイルを閉じる
