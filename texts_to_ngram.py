@@ -1,4 +1,6 @@
 # coding: utf-8
+# date:2016/05/19
+
 from nltk.tokenize import RegexpTokenizer
 import sys
 import gzip
