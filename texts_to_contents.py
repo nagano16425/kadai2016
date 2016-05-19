@@ -19,18 +19,15 @@ def mecab_parse(review):
         node = node.next                      # コールバック関数
         while node:
             word = node.surface               # 表層
-            array = node.feature.split(",")   # 品詞を分割
-            for i in range(4):
-                pos.insert(i, array[i])       # 品詞(pos[0]～pos[3])
+            pos = node.feature.split(",")[:4] # 品詞を分割
             if pos[0] in {u"名詞",u"動詞",u"形容詞",u"形容動詞",u"副詞"}:
                 # print ( word,pos[0] )       # 内容語(名詞,動詞,形容詞,形容動詞,副詞)判定確認用
-                node = node.next              # コールバック関数
-            if word not in index:
-                index[word] = len(index) + 1  # increment index
-                count[ index[word] ] = 1      # count initialize
-            else:
-                count[ index[word] ] += 1     # increment count
-                node = node.next              # コールバック関数
+                if word not in index:
+                    index[word] = len(index) + 1  # increment index
+                    count[ index[word] ] = 1      # count initialize
+                else:
+                    count[ index[word] ] += 1     # increment count
+            node = node.next                  # コールバック関数
     return
 
 if __name__=="__main__":
@@ -53,4 +50,5 @@ if __name__=="__main__":
     for review in reviews:
         review = review.strip('\n')           # 不要な空白,改行を削除
         mecab_parse(review)
-    print (sh["count"])                       # 素性ベクトルを出力
+        print(sent)
+    # print (sh["count"])                       # 素性ベクトルを出力
