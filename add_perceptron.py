@@ -3,7 +3,7 @@
 # Title:Perceptron
 # Detail:addsub_fv
 # Design:Naonori Nagano
-# Date:2016/05/24
+# Date:2016/05/25
 #
 
 import sys
@@ -19,7 +19,7 @@ def read_instance(i):                      # 2.8.1
     return LabelandFV
 
 def read_data(data):                       # 2.8.2
-    line = open(data,"r").readlines()      # file-opn
+    line = open(data,"r").readlines()      # file-open
     instance = []                          # Instance(All data)
     fv_max = 0                             # feature-vector MAX
     for i in line:
@@ -32,14 +32,14 @@ def read_data(data):                       # 2.8.2
     return instance,fv_max
 
 def add_fv(fv):                            # 2.8.5
-    for v in fv:                           # Extract fv
-        for k in v[1]:                     # Extract count(fv)
-            weight[int(k[0])] += int(k[1]) # ADD weight+count(fv)
+    for k in range(len(fv)):               # Calculation
+        # ADD weight+count(fv)
+        weight[int(fv[k][0])] += int(fv[k][1])     
 
 def sub_fv(fv):                            # 2.8.5
-    for v in fv:                           # Extract fv
-        for k in v[1]:                     # Extract count(fv)
-            weight[int(k[0])] -= int(k[1]) # SUB weight+count(fv)
+    for k in range(len(fv)):               # Calculation
+        # SUB weight+count(fv)
+        weight[int(fv[k][0])] -= int(fv[k][1])
 
 if __name__=="__main__":
     # 2.8.4
@@ -47,6 +47,7 @@ if __name__=="__main__":
     weight = [int(0)] * (int(max_index)+1)      # weight
 
     # 2.8.5
-    add_fv(train_data)
-    # sub_fv(train_data)
+    for one_rev in train_data:
+        add_fv(one_rev[1])
+        # sub_fv(one_rev[1])
     print(weight)

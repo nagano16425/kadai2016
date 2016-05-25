@@ -3,7 +3,7 @@
 # Title:Perceptron
 # Detail:fv_max
 # Design:Naonori Nagano
-# Date:2016/05/20
+# Date:2016/05/25
 #
 
 import sys
@@ -19,7 +19,7 @@ def read_instance(i):                      # 2.8.1
     return LabelandFV
 
 def read_data(data):                       # 2.8.2
-    line = open(data,"r").readlines()      # file-opn
+    line = open(data,"r").readlines()      # file-open
     instance = []                          # Instance(All data)
     fv_max = 0                             # feature-vector MAX
     for i in line:

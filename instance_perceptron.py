@@ -3,7 +3,7 @@
 # Title:Perceptron
 # Detail:read_instance
 # Design:Naonori Nagano
-# Date:2016/05/20
+# Date:2016/05/25
 #
 
 import sys
@@ -14,7 +14,7 @@ def read_instance(data):
         line = review.strip().split()  # Input to List
         label = tuple(line[0])         # Convert-tuple(label)
         del line[0]                    # delete label
-        fv = tuple(line)               # Convert-tuple(Index:value)
+        fv = tuple(line)               # Convert-tuple(Index:count)
         # Output
         print(label)
         print(fv)

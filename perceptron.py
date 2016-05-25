@@ -1,9 +1,9 @@
 # coding: utf-8
 #
 # Title:Perceptron
-# Detail:mult_fv
+# Detail:perceptron(basic)
 # Design:Naonori Nagano
-# Date:2016/05/24
+# Date:2016/05/26
 #
 
 import sys
@@ -32,28 +32,57 @@ def read_data(data):                           # 2.8.2
     return instance,fv_max
 
 def add_fv(fv):                                # 2.8.5
-    for v in fv:                               # Extract fv
-        for k in v[1]:                         # Extract count(fv)
-            weight[int(k[0])] += int(k[1])     # ADD weight+count(fv)
+    for k in range(len(fv)):                   # Calculation
+        # ADD weight+count(fv)
+        weight[int(fv[k][0])] += int(fv[k][1])     
 
 def sub_fv(fv):                                # 2.8.5
-    for v in fv:                               # Extract fv
-        for k in v[1]:                         # Extract count(fv)
-            weight[int(k[0])] -= int(k[1])     # SUB weight-count(fv)
+    for k in range(len(fv)):                   # Calculation
+        # SUB weight+count(fv)
+        weight[int(fv[k][0])] -= int(fv[k][1])
 
 def mult_fv(fv):                               # 2.8.6
-    if not len(weight) < len(fv):              # Ignore over max_index
-        for v in fv:                           # Extract fv
-            for k in v[1]:                     # Extract count(fv)
-                weight[int(k[0])] *= int(k[1]) # MULT weight*count(fv)
+    ans = 0
+    for k in range(len(fv)):                   # Calculation
+        if len(weight) > int(fv[k][0]):        # Ignore over max_index
+            # MULT weight*count(fv)
+            ans += weight[int(fv[k][0])] * int(fv[k][1])
+    return ans
+
+def update_weight(fv):                         # 2.8.7
+    for one_rev in fv:                         # Extract One review
+        mult = mult_fv(one_rev[1])             # To MULT
+        if (mult*int(one_rev[0])) <= 0:        # Non-mutch weight*label
+            if int(one_rev[0]) > 0:            # Label is positive
+                add_fv(one_rev[1])             # To ADD
+            else:                              # Label is negative
+                sub_fv(one_rev[1])             # To SUB
+
+def evaluate(test_data):                       # 2.8.9
+    correct = 0                                # Correct answer
+    instance_count = 0                         # instance count
+    for instance in test_data:                 # Extract One review
+        instance_count += 1                    # Count instance
+        mult = mult_fv(instance[1])            # To MULT
+        if (mult*int(instance[0])) > 0:        # match weight*label
+            correct += 1                       # count Correct answer
+    rate = correct/instance_count              # Rate's of Correct answer
+    return correct,instance_count,rate
 
 if __name__=="__main__":
     # 2.8.4
     train_data, max_index = read_data(sys.argv[1])
-    weight = [int(0)] * (int(max_index)+1)      # weight
+    # 2.8.8
+    test_data, max_index_test = read_data(sys.argv[2])
+    # weight(2.8.4)
+    weight = [int(0)] * (int(max_index)+1)
 
-    # 2.8.5 & 2.8.6
-    # add_fv(train_data)
-    # sub_fv(train_data)
-    mult_fv(train_data)
-    print(weight)
+    # 2.8.7&2.8.10
+    for learning in range(int(sys.argv[3])):
+        update_weight(train_data)
+
+    # 2.8.9
+    correct,instance_count,rate = evaluate(test_data)
+    print("正解数："+str(correct))
+    print("インスタンス数："+str(instance_count))
+    print("正解率："+str(rate*100)+"%")
