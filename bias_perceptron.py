@@ -1,7 +1,7 @@
 # coding: utf-8
 #
 # Title:Perceptron
-# Detail:margin
+# Detail:bias
 # Design:Naonori Nagano
 # Date:2016/05/31
 #
@@ -30,6 +30,7 @@ def read_instance(sent):                       # 2.8.1
     for j in range(len(fv_count)):
         x = float(fv_count[j]) / norm          # Calculate norm
         Tuple.append((fv_index[j],x))          # Input List
+    print(Tuple)
     LabelandFV = (line[0],Tuple)               # label & fv
     return LabelandFV
 
@@ -68,8 +69,7 @@ def update_weight(fv):                         # 2.8.7&2.9.1
     random.shuffle(fv)                         # Shuffle Train-data
     for one_rev in fv:                         # Extract One review
         mult = mult_fv(one_rev[1])             # To MULT
-        # Non-mutch weight*label
-        if (mult*int(one_rev[0])) <= 0 or (mult*int(one_rev[0])) <= 0.1:        
+        if (mult*int(one_rev[0])) <= 0:        # Non-mutch weight*label
             if int(one_rev[0]) > 0:            # Label is positive
                 add_fv(one_rev[1])             # To ADD
             else:                              # Label is negative

@@ -1,35 +1,20 @@
 # coding: utf-8
 #
 # Title:Perceptron
-# Detail:margin
+# Detail:perceptron(basic)
 # Design:Naonori Nagano
-# Date:2016/05/31
+# Date:2016/05/30
 #
 
 import sys
-import random                                  # 2.9.1
-random.seed(0)                                 # Random Number to 0
-import numpy as np                             # 2.9.2
 
 def read_instance(sent):                       # 2.8.1
     line = sent.strip().split()
     Tuple = []                                 # Tuple
-    fv_index = []                              # FV-INDEX
-    fv_count = []                              # FV-COUNT
-    for word in line:
-        if (word!=line[0]):                    # Not Label
-            # Split (index:count)
-            index,count = tuple(word.split(":"))
-            # 2.9.2
-            fv_index.append(index)             # ADD FV-INDEX
-            fv_count.append(count)             # ADD FV-COUNT
-    norm = np.linalg.norm(fv_count)            # Calculate norm
-    # 2.9.3
-    bias = (0,1)                               # bias(0,1)
-    Tuple.append(bias)                         # ADD bias
-    for j in range(len(fv_count)):
-        x = float(fv_count[j]) / norm          # Calculate norm
-        Tuple.append((fv_index[j],x))          # Input List
+    for j in line:
+        if (j!=line[0]):                       # Not Label
+            element = tuple(j.split(":"))      # Make Tuple
+            Tuple.append(element)              # Input List
     LabelandFV = (line[0],Tuple)               # label & fv
     return LabelandFV
 
@@ -49,27 +34,25 @@ def read_data(data):                           # 2.8.2
 def add_fv(fv):                                # 2.8.5
     for k in range(len(fv)):                   # Calculation
         # ADD weight+count(fv)
-        weight[int(fv[k][0])] += float(fv[k][1])     
+        weight[int(fv[k][0])] += int(fv[k][1])     
 
 def sub_fv(fv):                                # 2.8.5
     for k in range(len(fv)):                   # Calculation
         # SUB weight+count(fv)
-        weight[int(fv[k][0])] -= float(fv[k][1])
+        weight[int(fv[k][0])] -= int(fv[k][1])
 
 def mult_fv(fv):                               # 2.8.6
     ans = 0
     for k in range(len(fv)):                   # Calculation
         if len(weight) > int(fv[k][0]):        # Ignore over max_index
             # MULT weight*count(fv)
-            ans += weight[int(fv[k][0])] * float(fv[k][1])
+            ans += weight[int(fv[k][0])] * int(fv[k][1])
     return ans
 
-def update_weight(fv):                         # 2.8.7&2.9.1
-    random.shuffle(fv)                         # Shuffle Train-data
+def update_weight(fv):                         # 2.8.7
     for one_rev in fv:                         # Extract One review
         mult = mult_fv(one_rev[1])             # To MULT
-        # Non-mutch weight*label
-        if (mult*int(one_rev[0])) <= 0 or (mult*int(one_rev[0])) <= 0.1:        
+        if (mult*int(one_rev[0])) <= 0:        # Non-mutch weight*label
             if int(one_rev[0]) > 0:            # Label is positive
                 add_fv(one_rev[1])             # To ADD
             else:                              # Label is negative
