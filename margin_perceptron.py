@@ -1,9 +1,9 @@
 # coding: utf-8
 #
 # Title:Perceptron
-# Detail:averaged_weight(2.9.7)
+# Detail:margin
 # Design:Naonori Nagano
-# Date:2016/06/03
+# Date:2016/06/01
 #
 
 import sys
@@ -46,19 +46,17 @@ def read_data(data):                           # 2.8.2
                 fv_max = fv[0]                 # Input FV-MAX
     return instance,fv_max
 
-def add_fv(fv,weight):                         # 2.8.5
+def add_fv(fv):                                # 2.8.5
     for k in range(len(fv)):                   # Calculation
         # ADD weight+count(fv)
         weight[int(fv[k][0])] += float(fv[k][1])     
-    return weight
 
-def sub_fv(fv,weight):                         # 2.8.5
+def sub_fv(fv):                                # 2.8.5
     for k in range(len(fv)):                   # Calculation
         # SUB weight+count(fv)
         weight[int(fv[k][0])] -= float(fv[k][1])
-    return weight
 
-def mult_fv(fv,weight):                        # 2.8.6
+def mult_fv(fv):                               # 2.8.6
     ans = 0
     for k in range(len(fv)):                   # Calculation
         if len(weight) > int(fv[k][0]):        # Ignore over max_index
@@ -66,66 +64,40 @@ def mult_fv(fv,weight):                        # 2.8.6
             ans += weight[int(fv[k][0])] * float(fv[k][1])
     return ans
 
-def update_weight(fv,nupdates):                # 2.8.7 & 2.9.1 & 2.9.5
+def update_weight(fv):                         # 2.8.7&2.9.1
     random.shuffle(fv)                         # Shuffle Train-data
     for one_rev in fv:                         # Extract One review
-        mult = mult_fv(one_rev[1],weight)      # To MULT
+        mult = mult_fv(one_rev[1])             # To MULT
         # Non-mutch weight*label(2.8.7) + weight*fv<=0.1(2.9.4)
         if (mult*int(one_rev[0])) <= 0.1:      # Condition for 2.9.4
+            print(one_rev[0],mult)
             if int(one_rev[0]) > 0:            # Label is positive
-                add_fv(one_rev[1],weight)      # To ADD
+                add_fv(one_rev[1])             # To ADD
             if int(one_rev[0]) < 0:            # Label is negative
-                sub_fv(one_rev[1],weight)      # To SUB
-        # 2.9.5
-        x = []
-        for element in one_rev[1]:
-            index,count = element              # Split Index:Count
-            # Append index & count(count*nupdates)
-            x.append((index,float(count)*int(nupdates)))
-        if int(one_rev[0]) > 0:                # Label is positive
-            add_fv(x,weight)                   # To ADD
-        if int(one_rev[0]) < 0:                # Label is negative
-            sub_fv(x,weight)                   # To SUB
-        nupdates += 1                          # update nupdates
-    averaged_weight(fv,nupdates)               # To Averaged weight
-    return weight,tmp_weight,nupdates
+                sub_fv(one_rev[1])             # To SUB
 
 def evaluate(test_data):                       # 2.8.9
     correct = 0                                # Correct answer
     instance_count = 0                         # instance count
     for instance in test_data:                 # Extract One review
         instance_count += 1                    # Count instance
-        mult = mult_fv(instance[1],weight)     # To MULT
+        mult = mult_fv(instance[1])            # To MULT
         if (mult*int(instance[0])) > 0:        # match weight*label
             correct += 1                       # count Correct answer
     rate = correct/instance_count              # Rate's of Correct answer
     return correct,instance_count,rate
-
-def averaged_weight(fv,nupdates):              # 2.9.6 & 2.9.7
-    ave_weight = []
-    if not len(weight) == len(tmp_weight):
-        print("Failed!!")
-    if len(weight) == len(tmp_weight):
-        for i in range(len(weight)):
-            # weight-(tmp_weight/(nupdates+1))
-            x = weight[i] - tmp_weight[i] / (int(nupdates)+ 1)
-            ave_weight.append( x )             # Append Averaged_weight
-        print("Success!!")
-    return ave_weight
 
 if __name__=="__main__":
     # 2.8.4
     train_data, max_index = read_data(sys.argv[1])
     # 2.8.8
     test_data, max_index_test = read_data(sys.argv[2])
-    # weight(2.8.4) & tmp_weight(2.9.5)
+    # weight(2.8.4)
     weight = [int(0)] * (int(max_index)+1)
-    tmp_weight = weight
 
-    # 2.8.7 & 2.8.10 & 2.9.5
-    nupdates = 0
+    # 2.8.7&2.8.10
     for learning in range(int(sys.argv[3])):
-        update_weight(train_data,nupdates)
+        update_weight(train_data)
 
     # 2.8.9
     correct,instance_count,rate = evaluate(test_data)

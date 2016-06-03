@@ -1,7 +1,7 @@
 # coding: utf-8
 #
 # Title:Perceptron
-# Detail:averaged_weight(2.9.7)
+# Detail:tmpweight
 # Design:Naonori Nagano
 # Date:2016/06/03
 #
@@ -87,8 +87,7 @@ def update_weight(fv,nupdates):                # 2.8.7 & 2.9.1 & 2.9.5
         if int(one_rev[0]) < 0:                # Label is negative
             sub_fv(x,weight)                   # To SUB
         nupdates += 1                          # update nupdates
-    averaged_weight(fv,nupdates)               # To Averaged weight
-    return weight,tmp_weight,nupdates
+        print(x)
 
 def evaluate(test_data):                       # 2.8.9
     correct = 0                                # Correct answer
@@ -100,18 +99,6 @@ def evaluate(test_data):                       # 2.8.9
             correct += 1                       # count Correct answer
     rate = correct/instance_count              # Rate's of Correct answer
     return correct,instance_count,rate
-
-def averaged_weight(fv,nupdates):              # 2.9.6 & 2.9.7
-    ave_weight = []
-    if not len(weight) == len(tmp_weight):
-        print("Failed!!")
-    if len(weight) == len(tmp_weight):
-        for i in range(len(weight)):
-            # weight-(tmp_weight/(nupdates+1))
-            x = weight[i] - tmp_weight[i] / (int(nupdates)+ 1)
-            ave_weight.append( x )             # Append Averaged_weight
-        print("Success!!")
-    return ave_weight
 
 if __name__=="__main__":
     # 2.8.4
