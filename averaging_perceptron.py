@@ -1,7 +1,7 @@
 # coding: utf-8
 #
 # Title:Perceptron
-# Detail:evalute_weight
+# Detail:Averaging Perceptron
 # Design:Naonori Nagano
 # Date:2016/06/04
 #

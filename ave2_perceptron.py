@@ -1,7 +1,7 @@
 # coding: utf-8
 #
 # Title:Perceptron
-# Detail:evalute_weight
+# Detail:averaged_weight(2.9.7)
 # Design:Naonori Nagano
 # Date:2016/06/04
 #
@@ -90,10 +90,9 @@ def update_weight(fv,nupdates):                # 2.8.7 & 2.9.1 & 2.9.5
     averaged_weight(fv,nupdates)               # To Averaged weight
     return weight,tmp_weight,nupdates
 
-def evaluate(test_data,weight):                # 2.8.9 & 2.9.8
+def evaluate(test_data):                       # 2.8.9
     correct = 0                                # Correct answer
     instance_count = 0                         # instance count
-    print(weight)
     for instance in test_data:                 # Extract One review
         instance_count += 1                    # Count instance
         mult = mult_fv(instance[1],weight)     # To MULT
@@ -111,7 +110,7 @@ def averaged_weight(fv,nupdates):              # 2.9.6 & 2.9.7
             # weight-(tmp_weight/(nupdates+1))
             x = weight[i] - tmp_weight[i] / (int(nupdates)+ 1)
             ave_weight.append( x )             # Append Averaged_weight
-        # print("Success!!")
+        print("Success!!")
     return ave_weight
 
 if __name__=="__main__":
@@ -123,14 +122,13 @@ if __name__=="__main__":
     weight = [int(0)] * (int(max_index)+1)
     tmp_weight = weight
 
-    # 2.8.7 & 2.8.10 & 2.9.5 & 2.9.8
+    # 2.8.7 & 2.8.10 & 2.9.5
     nupdates = 0
     for learning in range(int(sys.argv[3])):
-        weight,tmp_weight,nupdates = update_weight(train_data,nupdates)
+        update_weight(train_data,nupdates)
 
-    # 2.8.9 & 2.9.8
-    correct,instance_count,rate = evaluate(test_data,weight)
-    print("重み更新回数："+str(nupdates))
+    # 2.8.9
+    correct,instance_count,rate = evaluate(test_data)
     print("正解数："+str(correct))
     print("インスタンス数："+str(instance_count))
     print("正解率："+str(rate*100)+"%")
