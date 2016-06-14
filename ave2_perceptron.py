@@ -3,7 +3,7 @@
 # Title:Perceptron
 # Detail:averaged_weight(2.9.7)
 # Design:Naonori Nagano
-# Date:2016/06/04
+# Date:2016/06/14
 #
 
 import sys
@@ -76,17 +76,17 @@ def update_weight(fv,nupdates):                # 2.8.7 & 2.9.1 & 2.9.5
                 add_fv(one_rev[1],weight)      # To ADD
             if int(one_rev[0]) < 0:            # Label is negative
                 sub_fv(one_rev[1],weight)      # To SUB
-        # 2.9.5
-        x = []
-        for element in one_rev[1]:
-            index,count = element              # Split Index:Count
-            # Append index & count(count*nupdates)
-            x.append((index,float(count)*int(nupdates)))
-        if int(one_rev[0]) > 0:                # Label is positive
-            add_fv(x,weight)                   # To ADD
-        if int(one_rev[0]) < 0:                # Label is negative
-            sub_fv(x,weight)                   # To SUB
-        nupdates += 1                          # update nupdates
+            nupdates += 1                      # update nupdates
+            # 2.9.5
+            x = []
+            for element in one_rev[1]:
+                index,count = element          # Split Index:Count
+                # Append index & count(count*nupdates)
+                x.append((index,float(count)*int(nupdates)))
+            if int(one_rev[0]) > 0:                # Label is positive
+                add_fv(x,weight)                   # To ADD
+            if int(one_rev[0]) < 0:                # Label is negative
+                sub_fv(x,weight)                   # To SUB
     averaged_weight(fv,nupdates)               # To Averaged weight
     return weight,tmp_weight,nupdates
 

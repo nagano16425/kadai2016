@@ -1,9 +1,9 @@
 # coding: utf-8
 #
 # Title:Perceptron
-# Detail:optparse
+# Detail:perceptron(extend)
 # Design:Naonori Nagano
-# Date:2016/06/10
+# Date:2016/06/14
 #
 
 import sys
@@ -32,7 +32,7 @@ def read_instance(sent):                       # 2.8.1
     # 2.9.3 & 2.9.9
     if(options.bias==True):                    # bias option is "True"
         bias = (0,1)                           # bias(0,1)
-        Tuple.append(bias)                     # ADD bias
+        Tuple.append(bias)
     for j in range(len(fv_count)):
         x = float(fv_count[j]) / norm          # Calculate norm
         Tuple.append((fv_index[j],x))          # Input List
@@ -76,27 +76,32 @@ def update_weight(fv,nupdates):                # 2.8.7 & 2.9.1 & 2.9.5
     random.shuffle(fv)                         # Shuffle Train-data
     for one_rev in fv:                         # Extract One review
         mult = mult_fv(one_rev[1],weight)      # To MULT
+        abs_mult = abs(mult)                   # MULT(Absolute value)
         # Non-mutch weight*label(2.8.7) + weight*fv<=margin(2.9.9)
-        if (mult*int(one_rev[0])) <= options.margin:
+        if (mult*int(one_rev[0]) <= 0 or abs_mult <= options.margin):
             if int(one_rev[0]) > 0:            # Label is positive
                 add_fv(one_rev[1],weight)      # To ADD
             if int(one_rev[0]) < 0:            # Label is negative
                 sub_fv(one_rev[1],weight)      # To SUB
-        # 2.9.5
-        x = []
-        for element in one_rev[1]:
-            index,count = element              # Split Index:Count
-            # Append index & count(count*nupdates)
-            x.append((index,float(count)*int(nupdates)))
-        if int(one_rev[0]) > 0:                # Label is positive
-            add_fv(x,weight)                   # To ADD
-        if int(one_rev[0]) < 0:                # Label is negative
-            sub_fv(x,weight)                   # To SUB
-        nupdates += 1                          # update nupdates
+            nupdates += 1                      # update nupdates
+            # 2.9.5
+            x = []
+            for element in one_rev[1]:
+                index,count = element          # Split Index:Count
+                # Append index & count(count*nupdates)
+                x.append((index,float(count)*int(nupdates)))
+            if int(one_rev[0]) > 0:            # Label is positive
+                add_fv(x,tmp_weight)           # To ADD
+            if int(one_rev[0]) < 0:            # Label is negative
+                sub_fv(x,tmp_weight)           # To SUB
     # 2.9.9
     if(options.average==True):                 # average option is "True"
-        averaged_weight(fv,nupdates)           # To Averaged weight
-    return weight,tmp_weight,nupdates
+        # To Averaged weight
+        ave_weight = averaged_weight(fv,nupdates)
+    else:
+        # Instead of Averaged weight
+        ave_weight = []
+    return weight,tmp_weight,nupdates,ave_weight
 
 def evaluate(test_data,weight):                # 2.8.9 & 2.9.8
     correct = 0                                # Correct answer
@@ -154,10 +159,13 @@ if __name__=="__main__":
     # 2.8.7 & 2.8.10 & 2.9.5 & 2.9.8 & 2.9.9
     nupdates = 0
     for learning in range(options.updates):
-        weight,tmp_weight,nupdates = update_weight(train_data,nupdates)
+        weight,tmp_weight,nupdates,ave_weight = update_weight(train_data,nupdates)
 
     # 2.8.9 & 2.9.8 & 2.9.9
-    correct,instance_count,rate = evaluate(test_data,weight)
+    if(options.average==True):                 # average option is "True"
+        correct,instance_count,rate = evaluate(test_data,ave_weight)
+    else:
+        correct,instance_count,rate = evaluate(test_data,weight)
     print("Update Weight：" +"\t"+","+str(nupdates))
     print("Correct Answer："+"\t"+","+str(correct))
     print("Instance Count："+"\t"+","+str(instance_count))
